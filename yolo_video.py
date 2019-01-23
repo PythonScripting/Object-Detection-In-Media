@@ -131,4 +131,5 @@ ln = net.getLayerNames()
 ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
 
 for file in os.listdir(directoryToSearch):
-	processVideo(directoryToSearch + "/" + file,"output/" + file)
+	outputFileName = file[:len(file)-3] + 'avi'
+	processVideo(directoryToSearch + "/" + file,"output/" + outputFileName)

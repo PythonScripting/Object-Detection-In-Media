@@ -10,6 +10,7 @@ import numpy as np
 import time
 import cv2
 import os
+import json
 
 yoloDirectory = "yolo-coco" # Directory which contains the labels, weights, and config for Yolo
 directoryToSearch = "images" # Name of folder which contains images to scan
@@ -20,29 +21,14 @@ showImages = False
 
 labelsPath = os.path.sep.join([yoloDirectory, "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")
-
-np.random.seed(1861)
-COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8") # Setting the color of the bounding box
-
 weightsPath = os.path.sep.join([yoloDirectory, "yolov3.weights"])
 configPath = os.path.sep.join([yoloDirectory, "yolov3.cfg"])
 
 print("[INFO] loading YOLO (pretrained on COCO) from specified path...")
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath) # Running the dnn module from OpenCV with Yolo
 
-def appendFile(filePath,content):
-	handle = open(filePath,"a")
-	handle.write(content)
-
-def writeImage(imagePath,imageToWrite,amountTaggedObjects,i):
-	if(os.path.isfile(outputFolder + "/"+str(i)+"/" + os.path.basename(imagePath))):
-		writeImage(imagePath,imageToWrite,amountTaggedObjects,i+1)
-	else:
-		if (not os.path.isdir(outputFolder + "/" + str(i) + "/")):
-			os.makedirs(outputFolder + "/" + str(i) + "/")
-		cv2.imwrite(outputFolder + "/"+str(i)+"/" + os.path.basename(imagePath), imageToWrite)
-		appendFile(outputFolder + "/"+str(i)+"Results.txt", os.path.basename(imagePath) + " : " + str(amountTaggedObjects) + "\n")
-
+np.random.seed(1861)
+COLORS = np.random.randint(0, 255, size=(len(LABELS), 3), dtype="uint8") # Setting the color of the bounding box
 def processImage(imagePath): # Function to load the image and process it
 	amountTaggedObjects = 0
 	imageToProcess = cv2.imread(imagePath)
@@ -84,6 +70,7 @@ def processImage(imagePath): # Function to load the image and process it
 
 	idxs = cv2.dnn.NMSBoxes(boxes, confidences, minConfidence, minThreshold) # Prevents multiple boxes from being drawn over the same object
 	amountTaggedObjects = len(idxs)
+	finalBoxes = []
 
 	if len(idxs) > 0:
 		for i in idxs.flatten():
@@ -94,12 +81,27 @@ def processImage(imagePath): # Function to load the image and process it
 			cv2.rectangle(imageToProcess, (startX, startY), (startX + boxWidth, startY + boxHeight), color, 2)
 			text = "{}: {:.4f}".format(LABELS[classIDs[i]], confidences[i])
 			cv2.putText(imageToProcess, text, (startX, startY - 5), cv2.FONT_HERSHEY_DUPLEX, 0.5, color, 2)
+			finalBoxes.append(boxes[i])
 
 	if showImages:
 		cv2.imshow("Image", imageToProcess)
 		cv2.waitKey(0) # Press any key to continue to the next image
 	else:
-		writeImage(imagePath,imageToProcess,amountTaggedObjects,1)
+		recordDetectionInfo(imagePath, imageToProcess, amountTaggedObjects, finalBoxes, 1)
+
+def recordDetectionInfo(imagePath, imageToWrite, amountTaggedObjects, boxes, i):
+	if(os.path.isfile(outputFolder + "/"+str(i)+"/" + os.path.basename(imagePath))):
+		recordDetectionInfo(imagePath, imageToWrite, amountTaggedObjects, boxes, i + 1)
+	else:
+		if (not os.path.isdir(outputFolder + "/" + str(i) + "/")):
+			os.makedirs(outputFolder + "/" + str(i) + "/")
+
+		boxes.append(amountTaggedObjects)
+		imageDict = {os.path.basename(imagePath): boxes}
+
+		cv2.imwrite(outputFolder + "/"+str(i)+"/" + os.path.basename(imagePath), imageToWrite)
+		appendFile(outputFolder + "/" + str(i) + "Results.txt", json.dumps(imageDict) + "\n")
+
 
 def processAllDirectories(d):
 	if not os.path.isdir(d):
@@ -107,5 +109,10 @@ def processAllDirectories(d):
 	else:
 		for item in os.listdir(d):
 			processAllDirectories((d + '/' + item) if d != '/' else '/' + item)
+
+def appendFile(filePath, content):
+	handle = open(filePath,"a")
+	handle.write(content)
+	handle.close()
 
 processAllDirectories(directoryToSearch)

@@ -2,7 +2,9 @@
 CPSC 393 - Final Project: Carlos, Everett, Keanu
 
 File: yolo.py
-Description: Performing object detection on images using YOLO (single-stage detector) pre-trained on the COCO dataset
+Purpose: Performing object detection on images using YOLO (single-stage detector) pre-trained on the COCO dataset
+Description: Take in a set of images from directoryToSearch, perform object detection (draw boxes around objects) and either
+show the user or output them to a file
 
 Adopted From: https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/
 '''
@@ -12,12 +14,14 @@ import cv2
 import os
 import json
 
+### CONFIG
 yoloDirectory = "yolo-coco"  # Directory which contains the labels, weights, and config for Yolo
 directoryToSearch = "images"  # Name of folder which contains images to scan
 outputFolder = "output"
-minConfidence = 0.6
-minThreshold = 0.3
-showImages = False
+minConfidence = 0.6 # How confident YOLO needs to be before it labels an object
+minThreshold = 0.3 # Threshold for preventing multiple boxes being drawn around the same object
+showImages = False # Set to false to output annotation data from model to a file, perhaps for later comparison
+### END CONFIG
 
 labelsPath = os.path.sep.join([yoloDirectory, "coco.names"])
 LABELS = open(labelsPath).read().strip().split("\n")

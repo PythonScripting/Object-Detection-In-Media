@@ -1,5 +1,6 @@
 '''
 CPSC 393 - Final Project
+BONUS FILE
 
 File: yolo_video.py
 Description: Performing object detection on videos using YOLO (single-stage detector) pre-trained on the COCO dataset
@@ -7,7 +8,6 @@ Description: Performing object detection on videos using YOLO (single-stage dete
 Adopted From: https://www.pyimagesearch.com/2018/11/12/yolo-object-detection-with-opencv/
 '''
 import numpy as np
-import argparse
 import imutils
 import time
 import cv2

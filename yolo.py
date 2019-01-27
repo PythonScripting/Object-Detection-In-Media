@@ -1,5 +1,6 @@
 '''
-CPSC 393 - Final Project: Carlos, Everett, Keanu
+CPSC 393 - Final Project
+Names: Carlos Amezquita, Everett Yee, Keanu Kauhi-Correia
 
 File: yolo.py
 Purpose: Performing object detection on images using YOLO (single-stage detector) pre-trained on the COCO dataset
@@ -17,7 +18,7 @@ import json
 ### CONFIG
 yoloDirectory = "yolo-coco"  # Directory which contains the labels, weights, and config for Yolo
 directoryToSearch = "images"  # Name of folder which contains images to scan
-outputFolder = "output"
+outputFolder = "output" # Name of folder where the program will write the labeled images, as well as annotation data
 minConfidence = 0.6 # How confident YOLO needs to be before it labels an object
 minThreshold = 0.3 # Threshold for preventing multiple boxes being drawn around the same object
 showImages = False # Set to false to output annotation data from model to a file, perhaps for later comparison

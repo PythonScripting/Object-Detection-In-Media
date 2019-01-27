@@ -1,5 +1,6 @@
 '''
 CPSC 393 - Final Project
+Names: Carlos Amezquita, Everett Yee, Keanu Kauhi-Correia
 BONUS FILE
 
 File: yolo_video.py

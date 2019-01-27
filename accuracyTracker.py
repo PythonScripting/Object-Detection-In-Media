@@ -1,5 +1,6 @@
 '''
-CPSC 393 - Final Project: Carlos, Everett, Keanu
+CPSC 393 - Final Project
+Names: Carlos Amezquita, Everett Yee, Keanu Kauhi-Correia
 
 File: accuracyTracker.py
 Description: Take in annotation data from the model and truth set, and output a final accuracy
@@ -11,9 +12,9 @@ import numpy as np
 
 
 ### CONFIG
-threshold = 0.05
-annotationsFile = "annotations/instances_val2017.json"
-resultsFile = "finalProject/1Results.txt"
+threshold = 0.05 # Tolerated pixel % difference in bounding box labels for classifying an annotation as accurate
+truthDataFile = "annotations/instances_val2017.json" # Path to file that contains truth data for dataset, currently only supports COCO format
+modelResultsFile = "finalProject/1Results.txt" # Path to file that contains label data from yolo.py program
 ### END CONFIG
 
 def getMaxDifference(box1, box2, imageWidth, imageHeight):
@@ -33,7 +34,7 @@ def readFile(filePath):
 
 def readResults():
     results = {}
-    with open(resultsFile) as topo_file:
+    with open(modelResultsFile) as topo_file:
         for line in topo_file:
             line = line.replace('\n','')
             line = json.loads(line)
@@ -41,8 +42,8 @@ def readResults():
     return results
 
 print("[INFO] Loading annotation data from disk...")
-imageInfo = json.loads(readFile(annotationsFile))['images']
-annotations = json.loads(readFile(annotationsFile))['annotations']
+imageInfo = json.loads(readFile(truthDataFile))['images']
+annotations = json.loads(readFile(truthDataFile))['annotations']
 resultsToCompare = readResults()
 
 print("[INFO] Building indexes...")

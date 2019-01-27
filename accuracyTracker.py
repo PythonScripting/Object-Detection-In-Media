@@ -63,7 +63,7 @@ for annotation in annotations:
 inaccurateAnnoatations = 0
 for result,bboxes in resultsToCompare.items():
     if(len(bboxes)) > 1:
-        inaccurateAnnoatations += 1
+        inaccurateAnnoatations += len(bboxes)-1
 
 errorRate = inaccurateAnnoatations/amountOfLabeledObjects
 accuracy = 1-errorRate

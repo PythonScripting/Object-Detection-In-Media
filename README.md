@@ -1,4 +1,4 @@
-# Object Detection In Media Using YoloV3
+# Object Detection In Media Using YOLOv3
 
 #### CPSC 393 Machine Learning Final Project
 
@@ -10,14 +10,23 @@ In order for YOLOv3 to work, the weights file must be put into yolo-coco folder.
 Directory Structure should look like this:
 
 root
+
 ├── annotations
+
 ├── images
+
 ├── output
+
 ├── yolo-coco
-│   ├── coco.names
-│   ├── yolov3.cfg
-│   └── yolov3.weights
+
+││││   ├── coco.names
+
+││││   ├── yolov3.cfg
+
+││││   └── yolov3.weights
+
 ├── accuracyTracker.py
+
 └── yolo.py
 
 #### Configurations
